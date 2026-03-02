@@ -9,6 +9,8 @@ use App\Models\Reservation;
 use App\Policies\ParkingLocationPolicy;
 use App\Policies\ParkingSlotPolicy;
 use App\Policies\ReservationPolicy;
+use App\Models\Vehicle;
+use App\Policies\VehiclePolicy;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,6 +24,7 @@ class AppServiceProvider extends ServiceProvider
         ParkingLocation::class => ParkingLocationPolicy::class,
         ParkingSlot::class => ParkingSlotPolicy::class,
         Reservation::class => ReservationPolicy::class,
+        Vehicle::class => VehiclePolicy::class,
     ];
     
     public function register(): void

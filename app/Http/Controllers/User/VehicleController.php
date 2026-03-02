@@ -4,10 +4,14 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\Vehicle;
+use App\Models\Reservation;
 use Illuminate\Http\Request;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class VehicleController extends Controller
 {
+    use AuthorizesRequests;
+
     public function index()
     {
         $vehicles = auth()->user()->vehicles;
@@ -31,7 +35,13 @@ class VehicleController extends Controller
     public function destroy(Vehicle $vehicle)
     {
         $this->authorize('delete', $vehicle);
+
+        if ($vehicle->reservations()->exists()) {
+            return back()->with('error', 'Vehicle cannot be removed because it has existing reservations.');
+        }
+
         $vehicle->delete();
+
         return back()->with('success', 'Vehicle removed.');
     }
 }

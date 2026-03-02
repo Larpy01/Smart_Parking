@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ParkingLocation;
 use App\Models\Reservation;
 use App\Models\ParkingSlot;
+use App\Models\Payment;
 use Illuminate\Http\Request;
 
 class ReservationController extends Controller
@@ -74,7 +75,7 @@ class ReservationController extends Controller
         // Create payment record
         Payment::create([
             'reservation_id' => $reservation->id,
-            'amount'         => 0, // calculated at checkout
+            'amount'         => 0,
             'payment_method' => $request->payment_method,
             'payment_status' => 'unpaid',
         ]);

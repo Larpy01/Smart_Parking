@@ -29,18 +29,7 @@
                     onsubmit="return confirm('Are you sure you want to cancel your subscription?')">
                     @csrf
                     <div class="text-right">
-                        <button class="w-40 bg-red-600 hover:bg-red-400 text-white text-sm py-2 px-4 rounded cursor-pointer">
-                            Cancel Subscription
-                        </button>
-                    </div>
-                </form>
-
-            @elseif ($subscription->status === 'active' && !$isFreePlan)
-                <form method="POST" action="{{ route('subscription.cancel') }}" class="mt-4 mb-4"
-                    onsubmit="return confirm('Are you sure you want to cancel your subscription?')">
-                    @csrf
-                    <div class="text-right">
-                        <button class="w-40 bg-red-600 hover:bg-red-400 text-white text-sm py-2 px-4 rounded cursor-pointer">
+                        <button class="w-40 bg-red-600 hover:bg-red-400 text-white mb-3 text-sm py-2 px-4 rounded cursor-pointer">
                             Cancel Subscription
                         </button>
                     </div>
@@ -51,11 +40,11 @@
             @endif
             <div class="flex flex-wrap justify-end gap-3">
                 <a href="{{ route('parking.index') }}"
-                   class="inline-flex px-4 py-2 rounded-md bg-blue-500 text-white text-sm font-semibold shadow-sm hover:bg-blue-600">
+                   class="p-4 rounded-md bg-blue-500 text-white text-sm font-semibold shadow-sm hover:bg-blue-600">
                     Browse parking locations
                 </a>
             </div>
-
+        
         @elseif (!$subscription || in_array($subscription->status, ['cancelled', 'expired']))
 
             @if ($subscription?->status === 'cancelled')
@@ -64,7 +53,7 @@
                 <p class="text-sm text-gray-500 mb-5">No active subscription.</p>
             @endif
 
-            <div id="plans-grid" class="grid md:grid-cols-3 gap-6">
+            <div id="plans-grid" class="grid md:grid-cols-3">
                 @foreach ($plans as $plan)
                     @if ($plan->price == 0 && $hasUsedFreePlan)
                         @continue
@@ -101,15 +90,14 @@
 
                     </div>
                 @endforeach
-            </div>
+           
 
-        @else
-            <p class="text-sm text-gray-500">
-                Your subscription status is currently: <strong>{{ ucfirst($subscription->status) }}</strong>.
-                Please contact support for assistance.
-            </p>
-        @endif
-
+                @else
+                    <p class="text-sm text-gray-500">
+                        Your subscription status is currently: <strong>{{ ucfirst($subscription->status) }}</strong>.
+                        Please contact support for assistance.
+                    </p>
+                @endif
     </div>
 
 </section>

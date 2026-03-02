@@ -27,6 +27,6 @@ class AdminParkLocController extends Controller
     public function destroy(ParkingLocation $parkingLocation)
     {
         $parkingLocation->delete();
-        return back();
+        return back()->with('success', 'Parking location removed.');
     }
 }
