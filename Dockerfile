@@ -25,12 +25,6 @@ RUN composer install --optimize-autoloader --no-interaction
 # Install JS deps & build Vite
 RUN npm install && npm run build
 
-# Debug: Check if assets were built
-RUN echo "=== Checking built assets ===" && \
-    ls -la public/build/ && \
-    ls -la public/build/assets/ || true && \
-    echo "=== Checking manifest ===" && \
-    cat public/build/manifest.json || true
 
 RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache /app/public
 
