@@ -26,4 +26,6 @@ RUN composer install --optimize-autoloader --no-interaction
 # Install JS deps & build Vite
 RUN npm install && npm run build
 
+RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache /app/public
+
 CMD php artisan serve --host=0.0.0.0 --port=$PORT
