@@ -14,295 +14,238 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet"/>
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>
+        /* BASE THEME COLORS */
+        :root {
+            --primary: #f97316;
+            --primary-hover: #ea580c;
+            --blue: #2563eb;
+            --blue-hover: #1d4ed8;
+            --bg-gray: #f3f4f6;
+            --sidebar-green: #dcfce7;
+            --sidebar-hover: #bbf7d0;
+            --text-dark: #111827;
+            --text-muted: #6b7280;
+        }
+
+        body {
+            font-family: 'Instrument Sans', sans-serif;
+            margin: 0;
+            background-color: var(--bg-gray);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* UTILITIES */
+        .flex { display: flex; }
+        .flex-col { flex-direction: column; }
+        .flex-1 { flex: 1; }
+        .items-center { align-items: center; }
+        .justify-between { justify-content: space-between; }
+        .hidden { display: none; }
+        .p-4 { padding: 1rem; }
+        .px-4 { padding-left: 1rem; padding-right: 1rem; }
+        .gap-2 { gap: 0.5rem; }
+        .shadow-sm { box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
+
+        /* HEADER */
+        .app-header {
+            background: white;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            height: 64px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .header-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .btn-blue {
+            background: var(--blue);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        /* SIDEBAR */
+        #sidebar {
+            width: 256px;
+            background: var(--sidebar-green);
+            border-right: 1px dotted #ccc;
+            transition: width 0.3s;
+            overflow-x: hidden;
+        }
+
+        #sidebar.w-16 { width: 64px; }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #374151;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+
+        .sidebar-link:hover {
+            background: var(--sidebar-hover);
+            color: var(--primary);
+        }
+
+        .sidebar-header {
+            height: 60px;
+            padding: 0 16px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        /* ICONS */
+        .icon-p {
+            height: 32px;
+            width: 32px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        /* FORMS & ERRORS */
+        .border-red-500 { border: 1px solid #ef4444 !important; }
+        .text-red-500 { color: #ef4444; font-size: 12px; }
+
+        footer {
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            padding: 24px 0;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+    </style>
     @stack('styles')
 </head>
 
-<body class="bg-gray-100 text-gray-900 min-h-screen flex flex-col font-sans">
+<body>
 
 @guest
     @if (!Route::is('login') && !Route::is('register') && !Route::is('password.request') && !Route::is('password.reset'))
-        <header class="sticky top-0 z-50 bg-white shadow-sm p-2">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-                <a href="{{ route('landing') }}" class="flex items-center gap-2 font-semibold text-lg">
-                    <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-orange-500 text-white text-lg">P</span>
+        <header class="app-header shadow-sm">
+            <div class="header-container px-4">
+                <a href="{{ route('landing') }}" class="flex items-center gap-2" style="text-decoration: none; color: inherit; font-weight: 600;">
+                    <span class="icon-p">P</span>
                     <span>Smart Parking</span>
                 </a>
-                <nav class="flex justify-end items-center gap-1 text-sm">
-                    <a href="{{ route('login') }}" class="inline-flex items-center px-3 py-1.5 rounded-md text-sm text-white bg-blue-600 hover:underline hover:bg-blue-400">Login</a>
-                    <a href="{{ route('register') }}" class="inline-flex items-center px-3 py-2 rounded-md text-blue-500 text-sm font-semibold hover:bg-gray-200 hover:underline">Register</a>
+                <nav class="flex items-center gap-2">
+                    <a href="{{ route('login') }}" class="btn-blue">Login</a>
+                    <a href="{{ route('register') }}" style="color: var(--blue); text-decoration: none; font-size: 14px; font-weight: 600;">Register</a>
                 </nav>
             </div>
         </header>
     @endif
 
     <main class="flex-1">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div style="max-width: 1280px; margin: 0 auto; padding: 32px 16px;">
             @yield('content')
         </div>
     </main>
 @endguest
 
 @auth
-<div class="flex flex-1 overflow-hidden">
-
-    {{-- SIDEBAR --}}
-    <aside id="sidebar" class="w-64 min-h-screen bg-green-100 border-r border-dotted shadow-sm flex flex-col shrink-0 transition-all px-0 duration-300 overflow-x-hidden">
-
-        <div class="h-16 flex items-center gap-2 px-4 border-b border-gray-200 shrink-0">
-            <span class="sidebar-text font-semibold text-lg whitespace-nowrap transition-opacity duration-300">
-                Smart Parking
-            </span>
-            <button id="sidebarToggle" class="ml-auto text-gray-500 hover:text-gray-900 focus:outline-none p-1 cursor-pointer"> <i class="fa-solid fa-bars"></i> </button>
+<div class="flex flex-1" style="overflow: hidden;">
+    <aside id="sidebar">
+        <div class="sidebar-header">
+            <span class="sidebar-text" style="font-weight: 600; font-size: 18px;">Smart Parking</span>
+            <button id="sidebarToggle" style="background: none; border: none; cursor: pointer; margin-left: auto;">
+                <i class="fa-solid fa-bars"></i>
+            </button>
         </div>
 
-        <nav class="flex-1 px-2 py-4 space-y-6 overflow-y-auto">
+        <nav class="p-4" style="flex: 1; display: flex; flex-direction: column; gap: 8px;">
             @if (auth()->user()->hasAdminAccess())
-                <div class="space-y-1 pt-4 border-t border-gray-50">
-                    <p class="px-3 mb-2 text-[10px] font-bold text-gray-400 uppercase tracking-wider truncate sidebar-text">Administration</p>
-                    <a href="{{ route('admin.dashboard') }}" class="flex items-center px-3 py-2 rounded-md text-sm font-medium hover:text-orange-600 hover:bg-orange-50 transition sidebar-link">
-                        <span class="sidebar-text truncate">Admin Panel</span>
-                    </a>
-                    <a href="{{ route('admin.parking-locations.index') }}" class="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-orange-600 hover:bg-orange-50 transition sidebar-link">
-                        <span class="sidebar-text truncate">Parking Locations</span>
-                    </a>
-                    <a href="{{ route('admin.parking-slots.index') }}" class="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-orange-600 hover:bg-orange-50 transition sidebar-link">
-                        <span class="sidebar-text truncate">Parking Slots</span>
-                    </a>
-                    <a href="{{ route('admin.reservations.index') }}" class="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-orange-600 hover:bg-orange-50 transition sidebar-link">
-                        <span class="sidebar-text truncate">Reservations</span>
-                    </a>
-                    <a href="{{ route('admin.subscriptions.index') }}"
-                        class="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-orange-600 hover:bg-orange-50 transition sidebar-link">
-                        <span class="sidebar-text truncate">Subscriptions</span>
-                    </a>
-                </div>
-
-            @elseif (auth()->user()->hasOperatorAccess())
-                <div class="space-y-1 pt-2">
-                    <p class="px-3 mb-2 text-[10px] font-bold text-gray-400 uppercase tracking-wider truncate sidebar-text">Operator</p>
-                    <a href="{{ route('staff.dashboard') }}" class="flex items-center px-3 py-2 rounded-md text-sm font-medium hover:text-orange-600 hover:bg-orange-50 transition sidebar-link">
-                        <span class="sidebar-text truncate">Dashboard</span>
-                    </a>
-                    <a href="{{ route('staff.scan.page') }}" class="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-orange-600 hover:bg-orange-50 transition sidebar-link">
-                        <span class="sidebar-text truncate">Scan</span>
-                    </a>
-                    <a href="{{ route('staff.payments.index') }}" class="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-emerald-200 hover:text-gray-900 transition-all sidebar-link">
-                        <span class="sidebar-text truncate">Payments</span>
-                    </a>
-                </div>
-
+                <p class="sidebar-text" style="font-size: 10px; font-weight: bold; color: #9ca3af; text-transform: uppercase;">Administration</p>
+                <a href="{{ route('admin.dashboard') }}" class="sidebar-link">Admin Panel</a>
+                <a href="{{ route('admin.parking-locations.index') }}" class="sidebar-link">Parking Locations</a>
+                <a href="{{ route('admin.parking-slots.index') }}" class="sidebar-link">Parking Slots</a>
             @else
-                <div class="space-y-1">
-                    <a href="{{ route('home') }}" class="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-emerald-200 hover:text-gray-900 transition-all sidebar-link">
-                        <span class="sidebar-text truncate">Dashboard</span>
-                    </a>
-                    <a href="{{ route('parking.index') }}" class="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-emerald-200 hover:text-gray-900 transition-all sidebar-link">
-                        <span class="sidebar-text truncate">Parking</span>
-                    </a>
-                    <a href="{{ route('vehicles.index') }}" class="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-emerald-200 hover:text-gray-900 transition-all sidebar-link">
-                        <span class="sidebar-text truncate">My vehicles</span>
-                    </a>
-                    <a href="{{ route('reservations.index') }}" class="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-emerald-200 hover:text-gray-900 transition-all sidebar-link">
-                        <span class="sidebar-text truncate">Reservations</span>
-                    </a>
-                    <a href="{{ route('subscription.index') }}" class="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-emerald-200 hover:text-gray-900 transition-all sidebar-link">
-                        <span class="sidebar-text truncate">Subscription</span>
-                    </a>
-                </div>
+                <a href="{{ route('home') }}" class="sidebar-link">Dashboard</a>
+                <a href="{{ route('parking.index') }}" class="sidebar-link">Parking</a>
+                <a href="{{ route('vehicles.index') }}" class="sidebar-link">My Vehicles</a>
             @endif
         </nav>
 
-        <div class="border-t border-gray-100 shrink-0">
+        <div style="border-top: 1px solid rgba(0,0,0,0.05);">
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
-                <button type="submit"
-                    class="w-full flex items-center px-4 py-4 text-sm font-medium text-gray-600 transition-all duration-200 hover:text-red-800 hover:bg-emerald-200 active:scale-95 cursor-pointer overflow-hidden">
-                    <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                    </svg>
-                    <span class="sidebar-text ml-3 truncate transition-opacity duration-300">Logout</span>
+                <button type="submit" class="sidebar-link" style="width: 100%; border: none; background: none; text-align: left; cursor: pointer; padding: 16px;">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span class="sidebar-text" style="margin-left: 12px;">Logout</span>
                 </button>
             </form>
         </div>
     </aside>
 
-    {{-- CONTENT --}}
-    <main class="flex-1 overflow-y-auto bg-gray-50">
-
+    <main class="flex-1" style="overflow-y: auto; background: #f9fafb;">
         @if (!Route::is('profile.edit'))
-            <header class="h-15 w-full bg-green-200 border-b border-dotted shadow-sm flex items-center justify-between px-4 shrink-0 transition-all duration-300">
+            <header style="background: #bbf7d0; height: 60px; display: flex; items-center; justify-between; padding: 0 16px; border-bottom: 1px dotted #ccc;">
                 <div class="flex items-center gap-2">
-                    <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-orange-500 text-white text-lg">P</span>
-                    <span class="text-2xl pl-2 font-semibold whitespace-nowrap transition-opacity duration-300">
-                        @yield('title')
-                    </span>
+                    <span class="icon-p">P</span>
+                    <span style="font-weight: 600; font-size: 20px;">@yield('title')</span>
                 </div>
-                <div id="profile" class="flex items-center gap-3">
-                    <span class="text-sm text-gray-600">{{ auth()->user()->name }}</span>
-                    <a href="{{ route('profile.edit') }}" class="block">
-                        <img src="{{ auth()->user()->profile_picture_url }}"
-                            class="h-8 w-8 rounded-full object-cover border hover:w-9 hover:h-9 transition-all duration-200"
-                            alt="Profile Picture">
+                <div class="flex items-center gap-2">
+                    <span style="font-size: 14px; color: #4b5563;">{{ auth()->user()->name }}</span>
+                    <a href="{{ route('profile.edit') }}">
+                        <img src="{{ auth()->user()->profile_picture_url }}" style="height: 32px; width: 32px; border-radius: 50%; object-fit: cover; border: 1px solid #ddd;">
                     </a>
                 </div>
             </header>
         @endif
 
-        <div class="space-y-10">
+        <div style="padding: 40px 16px;">
             @yield('content')
         </div>
     </main>
 </div>
 @endauth
 
-@if (!Route::is('login') && !Route::is('register') && !Route::is('password.request') && !Route::is('password.reset'))
-    <footer class="bg-gray-40 mt-10 shadow-sm p-6 mt-auto">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-sm text-gray-500 flex items-center justify-between">
+@if (!Route::is('login') && !Route::is('register'))
+    <footer>
+        <div class="header-container px-4">
             <span>&copy; {{ date('Y') }} Smart Parking</span>
-            <div class="flex gap-4">
-                <a href="{{ route('privacy') }}" class="hover:text-gray-900 cursor-pointer">Privacy Policy</a>
-                <a href="{{ route('terms') }}" class="hover:text-gray-900 cursor-pointer">Terms of Service</a>
+            <div class="flex gap-2">
+                <a href="{{ route('privacy') }}" style="color: inherit; text-decoration: none;">Privacy</a>
+                <a href="{{ route('terms') }}" style="color: inherit; text-decoration: none;">Terms</a>
             </div>
         </div>
     </footer>
 @endif
 
 <script>
-    // ── Sidebar ──
     const sidebar = document.getElementById('sidebar');
     const toggle = document.getElementById('sidebarToggle');
     toggle?.addEventListener('click', () => {
-        sidebar.classList.toggle('w-64');
         sidebar.classList.toggle('w-16');
-        document.querySelectorAll('.sidebar-text, .sidebar-link')
-            .forEach(el => el.classList.toggle('hidden'));
-    });
-
-    // ── Visibility ──
-    function togglePassword(inputId, iconId) {
-        const passwordInput = document.getElementById(inputId);
-        const eyeIcon = document.getElementById(iconId);
-        if (!passwordInput || !eyeIcon) return;
-        if (passwordInput.type === 'password') {
-            passwordInput.type = 'text';
-            eyeIcon.classList.replace('fa-eye-slash', 'fa-eye');
-        } else {
-            passwordInput.type = 'password';
-            eyeIcon.classList.replace('fa-eye', 'fa-eye-slash');
-        }
-    }
-
-    // ── Dismiss ──
-    function closeAlert() {
-        const alert = document.getElementById('success-alert');
-        if (alert) alert.remove();
-    }
-
-    // ── Persist ──
-    document.addEventListener('DOMContentLoaded', function () {
-        const emailInput = document.querySelector('input[name="email"]');
-        const rememberCheckbox = document.querySelector('input[name="remember"]');
-
-        if (!emailInput || !rememberCheckbox) return;
-
-        const savedEmail = localStorage.getItem('remembered_email');
-        if (savedEmail) {
-            emailInput.value = savedEmail;
-            rememberCheckbox.checked = true;
-        }
-
-        document.querySelector('form').addEventListener('submit', function () {
-            if (rememberCheckbox.checked) {
-                localStorage.setItem('remembered_email', emailInput.value);
-            } else {
-                localStorage.removeItem('remembered_email');
-            }
-        });
-    });
-
-    // ── Validation ──
-    document.addEventListener('DOMContentLoaded', function () {
-        const nameInput = document.querySelector('input[name="name"]');
-        const phoneInput = document.querySelector('input[name="phone_number"]');
-        const passwordInput = document.getElementById('password');
-        const confirmInput = document.getElementById('password_confirmation');
-
-        if (!nameInput || !passwordInput || !confirmInput) return;
-
-        function showError(input, message) {
-            removeError(input);
-            const error = document.createElement('p');
-            error.className = 'text-xs text-red-500 mt-1 dynamic-error';
-            error.innerText = message;
-            input.classList.add('border-red-500');
-            input.parentElement.appendChild(error);
-        }
-
-        function removeError(input) {
-            const oldError = input.parentElement.querySelector('.dynamic-error');
-            if (oldError) oldError.remove();
-            input.classList.remove('border-red-500');
-        }
-
-        nameInput.addEventListener('blur', function () {
-            removeError(nameInput);
-            if (nameInput.value.trim() === '') showError(nameInput, 'Full name is required.');
-        });
-
-        const emailInput = document.querySelector('input[name="email"]');
-        if (emailInput) {
-            emailInput.addEventListener('blur', function () {
-                removeError(emailInput);
-                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!emailPattern.test(emailInput.value)) showError(emailInput, 'Please enter a valid email address.');
-            });
-        }
-
-        if (phoneInput) {
-            phoneInput.addEventListener('blur', function () {
-                removeError(phoneInput);
-                if (phoneInput.value.length < 10 || phoneInput.value.length > 11) showError(phoneInput, 'Phone number must be 10-11 digits.');
-                else if (!/^\d+$/.test(phoneInput.value)) showError(phoneInput, 'Phone number must contain only digits.');
-            });
-        }
-
-        passwordInput.addEventListener('blur', function () {
-            removeError(passwordInput);
-            if (passwordInput.value.length < 8) { showError(passwordInput, 'Password must be at least 8 characters.'); return; }
-            if (!/[A-Z]/.test(passwordInput.value)) { showError(passwordInput, 'Password must contain at least one uppercase letter.'); return; }
-            if (!/[0-9]/.test(passwordInput.value)) showError(passwordInput, 'Password must contain at least one number.');
-        });
-
-        confirmInput.addEventListener('blur', function () {
-            removeError(confirmInput);
-            if (confirmInput.value !== passwordInput.value) showError(confirmInput, 'Passwords do not match.');
-        });
-    });
-
-    // ── Schedule ──
-    document.addEventListener('DOMContentLoaded', function () {
-        const startTime = document.getElementById('start_time');
-        const endTime = document.getElementById('end_time');
-
-        if (!startTime || !endTime) return;
-
-        startTime.min = new Date().toISOString().slice(0, 16);
-
-        startTime.addEventListener('change', function () {
-            endTime.min = this.value;
-            if (endTime.value && endTime.value <= this.value) endTime.value = '';
-        });
+        document.querySelectorAll('.sidebar-text').forEach(el => el.classList.toggle('hidden'));
     });
 </script>
 
-<style>
-    .sidebar-link {
-        @apply block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 transition;
-    }
-</style>
-
 @stack('scripts')
-@include('layouts.accessibility')
 </body>
 </html>
