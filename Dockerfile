@@ -4,33 +4,40 @@ FROM php:8.2-cli
 RUN apt-get update && apt-get install -y \
     git unzip curl zip \
     libpng-dev libjpeg-dev libfreetype6-dev \
-    libonig-dev libxml2-dev \
-    gnupg libzip-dev
+    libonig-dev libxml2-dev libzip-dev \
+    gnupg && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install Node.js
+# Install Node.js (stable LTS)
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs
 
 # Install PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd pdo pdo_mysql bcmath zip
+    && docker-php-ext-install gd pdo pdo_mysql mbstring tokenizer xml zip opcache
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /app
 
+# Copy project files
 COPY . .
 
-# Install PHP dependencies
+# Install PHP dependencies (production)
 RUN composer install --optimize-autoloader --no-dev --no-interaction
 
+# Install JS dependencies and build assets
 RUN npm install && npm run build
 
-RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache \
-    && chmod -R 775 /app/storage /app/bootstrap/cache
+# Set permissions on storage
+RUN chmod -R 775 storage bootstrap/cache
 
 EXPOSE 8080
 
-# Use a shell script or a multi-command CMD to clear cache at startup
-CMD php artisan config:clear && php artisan cache:clear && php -S 0.0.0.0:$PORT -t public public/index.php
+# Run migrations then start server at runtime (env vars are available here)
+CMD php artisan migrate --force && \
+    php artisan config:cache && \
+    php artisan route:cache && \
+    php artisan view:cache && \
+    php -S 0.0.0.0:$PORT -t public  
