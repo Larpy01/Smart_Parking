@@ -33,4 +33,4 @@ RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache \
 EXPOSE 8080
 
 # Use a shell script or a multi-command CMD to clear cache at startup
-CMD php artisan config:clear && php -S 0.0.0.0:$PORT -t public public/index.php
+CMD php artisan config:clear && php artisan cache:clear && php -S 0.0.0.0:$PORT -t public public/index.php
