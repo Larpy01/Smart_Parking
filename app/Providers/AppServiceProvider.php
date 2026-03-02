@@ -11,6 +11,7 @@ use App\Policies\ParkingSlotPolicy;
 use App\Policies\ReservationPolicy;
 use App\Models\Vehicle;
 use App\Policies\VehiclePolicy;
+use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -35,8 +36,10 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void
+    public function boot()
     {
-        //
+        if (config('app.env') === 'production') {
+            URL::forceScheme('https');
+        }
     }
 }
